@@ -1,5 +1,7 @@
 # 🤖 let-automation: LowEndTalk Deals Automation
 
+[![Cloud LET Run](https://github.com/bojak83318/hosting-deals-tracker/actions/workflows/cloud-run.yml/badge.svg)](https://github.com/bojak83318/hosting-deals-tracker/actions/workflows/cloud-run.yml)
+
 > **Deterministic Pipeline: Fetch → Parse → Deduplicate → Excel + GitHub**
 
 A fully automated workflow that replaces manual Power Query with a deterministic, programmatic approach to tracking hosting deals from LowEndTalk.
