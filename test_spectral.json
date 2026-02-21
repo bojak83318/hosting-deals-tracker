@@ -1,0 +1,25 @@
+[
+  {
+    "thread_id": "12345",
+    "title": "RackNerd KVM VPS - 2 vCPU 4GB RAM 80GB NVMe $3.49/mo",
+    "author": "provider1",
+    "post_date": "2026-02-18T08:10:00+0000",
+    "fetch_date": "2026-02-20T18:14:35.572126",
+    "url": "https://lowendtalk.com/discussion/12345/racknerd-offer",
+    "provider": "RackNerd",
+    "category": "VPS",
+    "cpu": 2,
+    "ram_gb": 4,
+    "storage_gb": 80,
+    "storage_type": "NVMe",
+    "bandwidth": 4096,
+    "ipv4_count": 1,
+    "ipv6": true,
+    "price_monthly": null,
+    "price_yearly": null,
+    "location": "USA",
+    "status": "ACTIVE",
+    "content_preview": "2 vCPU, 4 GB RAM, 80 GB NVMe SSD, 4 TB bandwidth, 1 IPv4 + IPv6 in USA. Only $3.49/mo.",
+    "raw_content": "2 vCPU, 4 GB RAM, 80 GB NVMe SSD, 4 TB bandwidth, 1 IPv4 + IPv6 in USA. Only $3.49/mo."
+  }
+]

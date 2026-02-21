@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>LowEndTalk Discussions</title>
+    <item>
+      <title>RackNerd KVM VPS - 2 vCPU 4GB RAM 80GB NVMe $3.49/mo</title>
+      <link>https://lowendtalk.com/discussion/12345/racknerd-offer</link>
+      <description>2 vCPU, 4 GB RAM, 80 GB NVMe, 4 TB bandwidth, 1 IPv4 + IPv6</description>
+      <pubDate>Fri, 20 Feb 2026 10:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>HostHatch Storage VPS 1TB HDD</title>
+      <link>https://lowendtalk.com/discussion/54321/hosthatch-storage</link>
+      <description>1 TB HDD storage VPS in Netherlands</description>
+      <pubDate>Thu, 19 Feb 2026 08:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

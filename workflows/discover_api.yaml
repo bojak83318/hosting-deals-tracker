@@ -1,0 +1,20 @@
+# Workflow: Discover LowEndTalk API
+name: discover_api
+steps:
+  - tool: spectral_nodriver
+    action: discover
+    target: https://lowendtalk.com
+    interactive: true
+    required: true
+  
+  - tool: let_spectral
+    action: analyze
+    required: false
+  
+  - tool: let_spectral
+    action: client
+    required: false
+
+config:
+  destination: console
+  priority: high

@@ -1,0 +1,94 @@
+name: Cloud LET Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Natural language command for llm_router"
+        required: true
+        default: "Sync latest LowEndTalk deals to excel and github"
+      router_provider:
+        description: "rule|claude|openai"
+        required: true
+        default: "rule"
+      run_spectral:
+        description: "Run spectral discovery step"
+        required: true
+        type: boolean
+        default: true
+  repository_dispatch:
+    types: [let_run]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas openpyxl requests beautifulsoup4 pyyaml
+          pip install anthropic openai
+
+      - name: Resolve inputs
+        id: resolve
+        run: |
+          COMMAND="${{ github.event.inputs.command || github.event.client_payload.command || 'Sync latest LowEndTalk deals to excel and github' }}"
+          PROVIDER="${{ github.event.inputs.router_provider || github.event.client_payload.router_provider || 'rule' }}"
+          RUN_SPECTRAL="${{ github.event.inputs.run_spectral }}"
+          if [ -z "$RUN_SPECTRAL" ]; then
+            RUN_SPECTRAL="${{ github.event.client_payload.run_spectral }}"
+          fi
+          if [ -z "$RUN_SPECTRAL" ]; then
+            RUN_SPECTRAL="true"
+          fi
+          echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
+          echo "provider=$PROVIDER" >> "$GITHUB_OUTPUT"
+          echo "run_spectral=$RUN_SPECTRAL" >> "$GITHUB_OUTPUT"
+
+      - name: Run cloud pipeline
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXTRA=""
+          if [ "${{ steps.resolve.outputs.run_spectral }}" != "true" ]; then
+            EXTRA="--skip-spectral"
+          fi
+          python workflows/cloud_run.py \
+            --command "${{ steps.resolve.outputs.command }}" \
+            --provider "${{ steps.resolve.outputs.provider }}" \
+            --excel-file output/Hosting-Deals-Tracker.xlsx \
+            --report-json output/cloud_run_report.json \
+            $EXTRA
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: let-automation-output-${{ github.run_number }}
+          path: |
+            output/Hosting-Deals-Tracker.xlsx
+            output/cloud_run_report.json
+
+      - name: Commit refreshed workbook
+        run: |
+          if [ ! -f output/Hosting-Deals-Tracker.xlsx ]; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/Hosting-Deals-Tracker.xlsx output/cloud_run_report.json
+          git commit -m "chore: cloud run refresh workbook [skip ci]" || exit 0
+          git push

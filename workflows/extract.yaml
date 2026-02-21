@@ -1,0 +1,23 @@
+# Workflow: Extract deals from LowEndTalk
+name: extract_deals
+steps:
+  - tool: let_scraper
+    action: scrape
+    filters:
+      timeframe: today
+    required: true
+  
+  - tool: processor
+    action: parse_deals
+    filters:
+      price_max: 20
+      category: vps
+    required: true
+  
+  - tool: excel_sync
+    action: update
+    required: false
+
+config:
+  destination: excel
+  priority: normal

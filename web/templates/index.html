@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deals Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <h1>Deals Dashboard</h1>
+    <p class="muted">Total deals: {{ total }}</p>
+
+    <form class="filters" method="get" action="/">
+      <input type="text" name="q" value="{{ filters.q }}" placeholder="Search provider/specs/title" />
+
+      <select name="provider">
+        <option value="">All providers</option>
+        {% for p in providers %}
+        <option value="{{ p }}" {% if filters.provider == p %}selected{% endif %}>{{ p }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="category">
+        <option value="">All categories</option>
+        {% for c in categories %}
+        <option value="{{ c }}" {% if filters.category == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="number" step="0.01" name="price_min" value="{{ filters.price_min }}" placeholder="Min $" />
+      <input type="number" step="0.01" name="price_max" value="{{ filters.price_max }}" placeholder="Max $" />
+
+      <select name="sort">
+        <option value="date_desc" {% if filters.sort=='date_desc' %}selected{% endif %}>Newest</option>
+        <option value="date_asc" {% if filters.sort=='date_asc' %}selected{% endif %}>Oldest</option>
+        <option value="price_asc" {% if filters.sort=='price_asc' %}selected{% endif %}>Price low-high</option>
+        <option value="price_desc" {% if filters.sort=='price_desc' %}selected{% endif %}>Price high-low</option>
+      </select>
+
+      <button type="submit">Apply</button>
+      <a class="button-link" href="/">Reset</a>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Provider</th>
+          <th>Category</th>
+          <th>Price/mo</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in deals %}
+        <tr>
+          <td><a href="/deal/{{ d.id }}">{{ d.id }}</a></td>
+          <td>{{ d.title }}</td>
+          <td><a href="/provider/{{ d.provider }}">{{ d.provider }}</a></td>
+          <td>{{ d.category }}</td>
+          <td>{% if d.price_monthly is not none %}${{ '%.2f'|format(d.price_monthly) }}{% else %}-{% endif %}</td>
+          <td>{{ d.date_posted or d.date_fetched }}</td>
+          <td>{{ d.status }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">No deals found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <nav class="pagination">
+      {% if page > 1 %}
+      <a href="?page={{ page-1 }}&per_page={{ per_page }}&q={{ filters.q }}&provider={{ filters.provider }}&category={{ filters.category }}&price_min={{ filters.price_min }}&price_max={{ filters.price_max }}&sort={{ filters.sort }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page }} / {{ total_pages }}</span>
+      {% if page < total_pages %}
+      <a href="?page={{ page+1 }}&per_page={{ per_page }}&q={{ filters.q }}&provider={{ filters.provider }}&category={{ filters.category }}&price_min={{ filters.price_min }}&price_max={{ filters.price_max }}&sort={{ filters.sort }}">Next</a>
+      {% endif %}
+    </nav>
+  </main>
+</body>
+</html>

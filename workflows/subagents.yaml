@@ -1,0 +1,83 @@
+# Workflow: Subagent Orchestration for LET Pipeline
+name: subagent_sync
+description: >
+  Multi-subagent workflow that separates planning, discovery, extraction,
+  validation, and publishing into explicit handoff stages.
+
+subagents:
+  - name: planner
+    role: Convert user intent into execution plan and filters
+    owner_tool: llm_router
+    output: ~/.let-automation/subagents/plan.json
+
+  - name: discovery
+    role: Refresh spectral capture/spec/client when needed
+    owner_tool: spectral_nodriver + let_spectral
+    output: ~/.spectral-nodriver/output/<latest>/
+
+  - name: extractor
+    role: Extract normalized deals from spectral first, fallback to bs4
+    owner_tool: workflows/auto_sync.py
+    output: ~/.let-automation/data/spectral_deals*.json
+
+  - name: notifier
+    role: Send Discord notifications for newly inserted deals
+    owner_tool: notifications/discord.py
+    output: ~/.let-automation/log/auto_sync_*.md
+
+  - name: publisher
+    role: Generate Excel and optional GitHub sync
+    owner_tool: workflows/auto_sync.py
+    output: ~/workspace/Hosting-Deals-Tracker.xlsx
+
+steps:
+  - tool: llm_router
+    action: parse_command
+    command: "Find new LET VPS deals and sync outputs"
+    required: false
+
+  - tool: spectral_nodriver
+    action: discover
+    target: https://lowendtalk.com
+    interactive: false
+    required: false
+
+  - tool: let_spectral
+    action: analyze
+    required: false
+
+  - tool: let_spectral
+    action: client
+    required: false
+
+  - tool: let_spectral
+    action: extract-to-json
+    required: false
+
+  - tool: processor
+    action: parse_deals
+    filters:
+      source_priority:
+        - spectral
+        - bs4
+      category: vps
+      status:
+        - NEW
+        - ACTIVE
+    required: false
+
+  - tool: excel_sync
+    action: update
+    required: false
+
+  - tool: github_sync
+    action: commit
+    required: false
+
+config:
+  destination: excel
+  priority: high
+  mode: subagent
+  handoff_dir: ~/.let-automation/subagents
+  alerts:
+    discord_enabled: true

@@ -1,0 +1,4 @@
+# let-automation daily sync at 09:00 (server local time)
+# Install with: crontab -e
+
+0 9 * * * cd ~/workspace/let-automation && /usr/bin/env bash -lc 'source .venv/bin/activate && PYTHONPATH=. python3 workflows/auto_sync.py >> ~/.let-automation/log/cron_sync.log 2>&1'

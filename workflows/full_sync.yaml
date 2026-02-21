@@ -1,0 +1,24 @@
+# Workflow: Full sync to GitHub and Excel
+name: full_sync
+steps:
+  - tool: let_scraper
+    action: scrape
+    filters:
+      timeframe: today
+    required: true
+  
+  - tool: processor
+    action: parse_deals
+    required: true
+  
+  - tool: excel_sync
+    action: update
+    required: false
+  
+  - tool: github_sync
+    action: commit
+    required: false
+
+config:
+  destination: both
+  priority: normal

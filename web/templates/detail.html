@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deal #{{ deal.id }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <a href="/">← Back</a>
+    <h1>Deal #{{ deal.id }}</h1>
+
+    <section class="card">
+      <h2>{{ deal.title }}</h2>
+      <p><strong>Provider:</strong> <a href="/provider/{{ deal.provider }}">{{ deal.provider }}</a></p>
+      <p><strong>Specs:</strong> {{ deal.cpu }} vCPU, {{ deal.ram_gb }} GB RAM, {{ deal.storage_gb }} GB {{ deal.storage_type }}</p>
+      <p><strong>Network:</strong> {{ deal.bandwidth }} GB, IPv4 {{ deal.ipv4_count }}, IPv6 {{ 'Yes' if deal.ipv6 else 'No' }}</p>
+      <p><strong>Price:</strong> {% if deal.price_monthly is not none %}${{ '%.2f'|format(deal.price_monthly) }} /mo{% else %}-{% endif %}</p>
+      <p><strong>Posted:</strong> {{ deal.date_posted }}</p>
+      <p><strong>Fetched:</strong> {{ deal.date_fetched }}</p>
+      <p><strong>Status:</strong> {{ deal.status }}</p>
+      <p><strong>Preview:</strong> {{ deal.content_preview }}</p>
+    </section>
+
+    <section class="card">
+      <h2>Price History</h2>
+      {% if history %}
+      <ul class="chart">
+        {% for h in history %}
+        {% set val = h.price_monthly or h.price_yearly or 0 %}
+        {% set width = (val / max_price * 100) if max_price and val else 0 %}
+        <li>
+          <span>{{ h.date_recorded[:10] }}</span>
+          <div class="bar-wrap"><div class="bar" style="width: {{ width }}%"></div></div>
+          <span>{% if h.price_monthly is not none %}${{ '%.2f'|format(h.price_monthly) }} /mo{% elif h.price_yearly is not none %}${{ '%.2f'|format(h.price_yearly) }} /yr{% else %}-{% endif %}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No price history yet.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>

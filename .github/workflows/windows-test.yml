@@ -1,0 +1,25 @@
+name: Windows Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows-test:
+    runs-on: windows-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Windows test helper
+        shell: pwsh
+        run: |
+          ./scripts/test_windows.ps1

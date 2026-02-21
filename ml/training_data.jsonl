@@ -1,0 +1,5 @@
+{"text": "4 vCPU, 8 GB RAM, 160 GB SSD storage, 3 TB bandwidth, $19/mo", "cpu": 4, "ram_gb": 8.0, "storage_gb": 160.0, "storage_type": "ssd", "bandwidth_tb": 3.0, "price_monthly": 19.0}
+{"text": "8 cores, 32GB memory, 1TB NVMe disk, 8TB transfer, $79 per month", "cpu": 8, "ram_gb": 32.0, "storage_gb": 1024.0, "storage_type": "nvme", "bandwidth_tb": 8.0, "price_monthly": 79.0}
+{"text": "2 core server with 4GB RAM and 500GB HDD, 2TB traffic, monthly 14.5", "cpu": 2, "ram_gb": 4.0, "storage_gb": 500.0, "storage_type": "hdd", "bandwidth_tb": 2.0, "price_monthly": 14.5}
+{"text": "Starter plan: dual core, 4096MB RAM, solid-state storage 120GB, 1TB bandwidth, $9.99/mo", "cpu": 2, "ram_gb": 4.0, "storage_gb": 120.0, "storage_type": "ssd", "bandwidth_tb": 1.0, "price_monthly": 9.99}
+{"text": "Enterprise compute with 16 vCPU, 64GB RAM, 2TB NVMe, 20TB data transfer, $149/month", "cpu": 16, "ram_gb": 64.0, "storage_gb": 2048.0, "storage_type": "nvme", "bandwidth_tb": 20.0, "price_monthly": 149.0}
